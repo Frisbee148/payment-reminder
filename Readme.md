@@ -1,4 +1,4 @@
-#backend for payment selection app
+#backend for payment reminder system
 i have used ethereal as mailing service 
 you can acess the otp by logging into the ethreal account that i have made
 email-waldo12@ethereal.email
