@@ -149,34 +149,32 @@ const startEmailScheduler = () => {
 
   // Helper function to create reminder email
   const createReminderEmail = (name, payment, dueIn) => {
-    return `
-      Hello ${name},
-      
+    return `
+      Hello ${name},
+      
       This is a friendly reminder that your payment for "<strong>${payment.paymentName}</strong>" of amount <strong>$${payment.amount.toFixed(2)}</strong> is due ${dueIn}. Please ensure you complete the payment on or before the due date, <strong>${payment.deadline.toDateString()}</strong>.
-      
+      
       Thank you for using our Payment Reminder System.
-      
+      
       Sincerely,
-      Payment Reminder Team
-      
+      Payment Reminder Team
       [Manage Your Payments Here](http://localhost:3000)
-    `;
+    `;
   };
 
   // Helper function to create overdue email
   const createOverdueEmail = (name, payment) => {
-    return `
-      Hi ${name},
-      
+    return `
+      Hi ${name},
+      
       Your payment for "<strong>${payment.paymentName}</strong>" of amount <strong>$${payment.amount.toFixed(2)}</strong> was due on <strong>${payment.deadline.toDateString()}</strong> and is now overdue. Please make the payment at the earliest to avoid any penalties.
-      
+      
       Thank you for using our Payment Reminder System.
-      
+      
       Sincerely,
-      Payment Reminder Team
-      
+      Payment Reminder Team 
       [Manage Your Payments Here](http://localhost:3000)
-    `;
+    `;
   };
 };
 
