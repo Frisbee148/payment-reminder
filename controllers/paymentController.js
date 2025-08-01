@@ -14,6 +14,20 @@ const createPayment = asyncHandler(async (req, res) => {
     );
   }
 
+  // Validate amount is positive
+  if (amount <= 0) {
+    throw new ApiError(400, "Amount must be greater than 0.");
+  }
+
+  // Validate deadline is in the future
+  const deadlineDate = new Date(deadline);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  if (deadlineDate < today) {
+    throw new ApiError(400, "Deadline must be in the future.");
+  }
+
   const newPayment = await Payment.create({
     userId,
     paymentName,

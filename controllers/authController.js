@@ -3,6 +3,7 @@ const generateOTP = require("../utils/generateOTP");
 const sendEmail = require("../utils/sendEmail");
 const ApiError = require("../utils/ApiError");
 const ApiResponse = require("../utils/ApiResponse");
+const asyncHandler = require("../utils/asyncHandler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -13,7 +14,7 @@ const generateAccessToken = (userId) => {
   });
 };
 // register logic
-const register = async (req, res) => {
+const register = asyncHandler(async (req, res) => {
   const { name, email } = req.body;
 
   if (!name || !email) {
@@ -52,10 +53,10 @@ const register = async (req, res) => {
     .json(
       new ApiResponse(201, {}, "User created successfully. OTP sent to email.")
     );
-};
+});
 
 // otp verification
-const verifyOTP = async (req, res) => {
+const verifyOTP = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
 
   if (!email || !otp) {
@@ -89,10 +90,55 @@ const verifyOTP = async (req, res) => {
   await user.save({ validateBeforeSave: false }); // Skip validation because we are just updating existing fields
 
   res.status(200).json(new ApiResponse(200, {}, "User verified successfully!"));
-};
+});
+
+// Request OTP for login
+const requestLoginOTP = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, "Email is required");
+  }
+
+  // Find the user
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  if (!user.isVerified) {
+    throw new ApiError(
+      401,
+      "User not verified. Please verify your email first."
+    );
+  }
+
+  // Generate new OTP for login
+  const otp = generateOTP();
+  const hashedOtp = await bcrypt.hash(otp, 10);
+  const otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  // Update user with new OTP
+  user.otp = hashedOtp;
+  user.otpExpires = otpExpires;
+  await user.save({ validateBeforeSave: false });
+
+  // Send OTP email
+  const message = `Hello ${user.name}, your OTP for login is: <b>${otp}</b>. It is valid for 10 minutes.`;
+  await sendEmail({
+    email: user.email,
+    subject: "OTP for Login - Payment Reminder System",
+    message,
+  });
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, {}, "OTP sent to email successfully."));
+});
 
 //Login a user and generate JWT token
-const login = async (req, res) => {
+const login = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
 
   if (!email || !otp) {
@@ -149,10 +195,11 @@ const login = async (req, res) => {
         "User logged in successfully."
       )
     );
-};
+});
 
 module.exports = {
   register,
   verifyOTP,
+  requestLoginOTP,
   login,
 };
