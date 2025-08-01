@@ -18,7 +18,8 @@ if (!MONGODB_URI) {
   process.exit(1);
 }
 
-mongoose.connect(MONGODB_URI)
+mongoose
+  .connect(MONGODB_URI)
   .then(() => console.log("MongoDB Connected Successfully to Atlas!"))
   .catch((err) => {
     console.error("MongoDB Connection Error:", err.message);
