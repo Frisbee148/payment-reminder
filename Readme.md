@@ -1,6 +1,9 @@
-#backend for payment reminder system
-i have used ethereal as mailing service 
-you can acess the otp by logging into the ethreal account that i have made
+#backend for payment reminder system,
+i have used ethereal as mailing service, 
+you can acess the otp by logging into the ethreal account that i have made,
+the frontend is hosted on localhost3000
+the backend is hosted on localhost5000
+
 email-waldo12@ethereal.email
 password-gK8zHTBfqjYjHHTwxS
 the procedure for use is 
