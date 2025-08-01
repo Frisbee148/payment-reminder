@@ -127,7 +127,7 @@ const startEmailScheduler = () => {
             const message = createOverdueEmail(user.name, payment);
             await sendEmail({
               email: user.email,
-              subject: `⚠️ OVERDUE: ${payment.paymentName} payment is past due`,
+              subject: `OVERDUE: ${payment.paymentName} payment is past due`,
               message,
             });
           }
