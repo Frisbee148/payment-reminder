@@ -1,5 +1,8 @@
 #backend for payment selection app
 i have used ethereal as mailing service 
+you can acess the otp by logging into the ethreal account that i have made
+email-waldo12@ethereal.email
+password-gK8zHTBfqjYjHHTwxS
 the procedure for use is 
 1) first register yourself as a user,you will get a otp thats otp for registration
 2) then login as a user,you will get otp for login
