@@ -5,16 +5,21 @@ const cors = require("cors");
 
 // Import routes and middleware
 const authRoutes = require("./routes/authRoutes");
-const paymentRoutes = require("./routes/paymentRoutes"); // NEW
+const paymentRoutes = require("./routes/paymentRoutes");
 const { errorHandler } = require("./middleware/errorMiddleware");
+
+// Import the email scheduler
+const startEmailScheduler = require("./cron/emailScheduler");
 
 dotenv.config();
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Database Connection
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
@@ -24,7 +29,11 @@ if (!MONGODB_URI) {
 
 mongoose
   .connect(MONGODB_URI)
-  .then(() => console.log("MongoDB Connected Successfully to Atlas!"))
+  .then(() => {
+    console.log("MongoDB Connected Successfully to Atlas!");
+    // Start the cron job after a successful database connection
+    startEmailScheduler(); // NEW
+  })
   .catch((err) => {
     console.error("MongoDB Connection Error:", err.message);
     process.exit(1);
@@ -39,7 +48,7 @@ app.get("/", (req, res) => {
   res.send("Payment Reminder System Backend API is running!");
 });
 
-// added extra error check for middleware
+// final erorhandling check
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
